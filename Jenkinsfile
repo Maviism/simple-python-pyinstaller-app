@@ -2,8 +2,6 @@ node {
     checkout scm
     stage('Build') {
         docker.image('python:2-alpine').inside {
-            sh 'cd .. && ls -l'
-            sh 'ls -l'
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
