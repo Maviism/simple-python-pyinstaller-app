@@ -19,7 +19,9 @@ node {
         }
     }
     stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside {
+        docker.image('cdrx/pyinstaller-linux:python3').inside {
+            // try to echo hello
+            sh 'echo "hello"'
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
         archiveArtifacts 'dist/add2vals'
