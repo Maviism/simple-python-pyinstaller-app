@@ -22,23 +22,20 @@ node {
     }
     
     stage('Deliver') {
-      docker.image('python:3-alpine').inside {
-          try {
-              // Instal PyInstaller sebagai root
-              sh 'pip install --user pyinstaller'
-              
-              // Atau menggunakan perintah pip dengan --user
-              // sh 'pip install --user pyinstaller'
-              
-              // Buat executable dengan PyInstaller
-              sh 'pyinstaller --onefile sources/add2vals.py'
-              
-              // Arsipkan executable
-              archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
-          } catch (err) {
-              echo "Error in Deliver stage: ${err}"
-              throw err
-          }
-      }
-  }
+        docker.image('python:3-alpine').inside {
+            try {
+                // Instal PyInstaller dengan opsi --break-system-packages
+                sh 'pip install --break-system-packages pyinstaller'
+                
+                // Buat executable dengan PyInstaller
+                sh 'pyinstaller --onefile sources/add2vals.py'
+                
+                // Arsipkan executable
+                archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
+            } catch (err) {
+                echo "Error in Deliver stage: ${err}"
+                throw err
+            }
+        }
+    }
 }
