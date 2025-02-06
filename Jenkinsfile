@@ -22,9 +22,9 @@ node {
     }
     
     stage('Deliver') {
-        docker.image('python:3-alpine').inside {
+        docker.image('python:3-slim').inside {
             try {
-                // Install PyInstaller
+                // Instal PyInstaller
                 sh 'pip install pyinstaller'
                 
                 // Buat executable dengan PyInstaller
@@ -33,7 +33,6 @@ node {
                 // Arsipkan executable
                 archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
             } catch (err) {
-                // Tangkap dan print error jika proses gagal
                 echo "Error in Deliver stage: ${err}"
                 throw err
             }
