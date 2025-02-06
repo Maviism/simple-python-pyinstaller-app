@@ -24,8 +24,11 @@ node {
     stage('Deliver') {
         docker.image('python:3-alpine').inside {
             try {
-                // Instal PyInstaller dengan opsi --break-system-packages
-                sh 'pip install --break-system-packages pyinstaller'
+                // Instal dependensi yang diperlukan
+                sh 'apk add --no-cache build-base python3-dev'
+                
+                // Instal PyInstaller
+                sh 'pip install pyinstaller'
                 
                 // Buat executable dengan PyInstaller
                 sh 'pyinstaller --onefile sources/add2vals.py'
