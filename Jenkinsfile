@@ -39,15 +39,14 @@ node {
                 sh """
                     scp -i ${SSH_KEY} -o StrictHostKeyChecking=no \
                     sources/dist/add2vals \
-                    ${VM_USER}@98.66.137.249:/idcamp/
+                    ${VM_USER}@98.66.137.249:/home/${VM_USER}/idcamp/
                 """
                 
                 // Optional: Jalankan perintah di remote VM
                 sh """
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no \
                     ${VM_USER}@98.66.137.249 \
-                    'chmod +x /idcamp/add2vals && \
-                     /idcamp/add2vals'
+                    'chmod +x /home/${VM_USER}/idcamp/add2vals && /home/${VM_USER}/idcamp/add2vals 10 20'
                 """
             }
             
