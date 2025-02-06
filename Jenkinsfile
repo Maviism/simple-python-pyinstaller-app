@@ -22,13 +22,15 @@ node {
     }
     
     stage('Deliver') {
-        env.VOLUME = "${pwd()}/sources:/src"
-        env.IMAGE = 'cdrx/pyinstaller-linux:python2'
-        dir(env.BUILD_ID) {
-            unstash(name: 'compiled-results')
-            sh "docker run --rm -v ${env.VOLUME} ${env.IMAGE} 'pyinstaller -F add2vals.py'"
+         withEnv(['VOLUME=$(pwd)/sources:/src', 'IMAGE=cdrx/pyinstaller-linux:python3']) {
+            dir(path: env.BUILD_ID) {
+                unstash name: 'compiled-results'
+                sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F add2vals.py'"
+                archiveArtifacts "sources/dist/add2vals"
+                // tambahkan proses deploy disini
+                // tambahkan proses jeda 1menit
+                // sh "docker run --rm -v ${VOLUME} ${IMAGE} 'rm -rf build dist'"
+            }
         }
-        archiveArtifacts "sources/dist/add2vals"
-        sh "docker run --rm -v ${env.VOLUME} ${env.IMAGE} 'rm -rf build dist'"
     }
 }
