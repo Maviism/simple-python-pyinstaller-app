@@ -2,25 +2,24 @@ node {
     checkout scm
 
     stage('Build') {
-        // Use Python 3 container image
         docker.image('python:3-alpine').inside {
-            // Compile Python files to check for syntax errors
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
-    
+
     stage('Test') {
-        docker.image('qnib/pytest').inside { 
+        docker.image('qnib/pytest').inside {
+            // Specialized container for Python testing
+            // Pre-installed with pytest framework and dependencies
+            // Ready-to-use testing environment
             try {
-                // Run tests using pytest
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test'
             } finally {
-                // Archive the test results
                 junit 'test-reports/results.xml'
             }
         }
     }
-    
+
     stage('Deliver') {
          withEnv(['VOLUME=$(pwd)/sources:/src', 'IMAGE=cdrx/pyinstaller-linux:python3']) {
             dir(path: env.BUILD_ID) {
