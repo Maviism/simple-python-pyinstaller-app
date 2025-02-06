@@ -22,13 +22,17 @@ node {
     }
     
     stage('Deliver') {
-        env.VOLUME = "${pwd()}/sources:/src"
-        env.IMAGE = 'cdrx/pyinstaller-linux:python2'
-        dir(env.BUILD_ID) {
-            unstash(name: 'compiled-results')
-            sh "docker run --rm -v ${env.VOLUME} ${env.IMAGE} 'pyinstaller -F add2vals.py'"
+        docker.image('cdrx/pyinstaller-linux:python3').inside {  // Ganti ke Python 3
+            // Copy file dari workspace Jenkins ke container
+            sh 'cp -r sources /tmp/'
+            sh 'mkdir -p dist'
+            
+            // Compile dalam directory yang konsisten
+            sh 'pyinstaller --onefile /tmp/sources/add2vals.py'
+            
+            // Copy hasil build kembali ke workspace
+            sh 'cp dist/add2vals ${WORKSPACE}/dist/'
         }
-        archiveArtifacts "sources/dist/add2vals"
-        sh "docker run --rm -v ${env.VOLUME} ${env.IMAGE} 'rm -rf build dist'"
+        archiveArtifacts 'dist/add2vals'
     }
 }
