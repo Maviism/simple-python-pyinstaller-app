@@ -23,9 +23,9 @@ node {
     
     stage('Deliver') {
         checkout scm
-        docker.image('python:3-alpine').inside {
+        docker.image('python:3').inside {
             // Install PyInstaller for Python 3
-            sh 'pip install --no-cache-dir pyinstaller'
+            sh 'pip install --no-cache-dir --user pyinstaller'
 
             // Compile the Python script into a standalone executable
             sh 'pyinstaller --onefile sources/add2vals.py'
