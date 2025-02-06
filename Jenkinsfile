@@ -22,17 +22,21 @@ node {
     }
     
     stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python3').inside {  // Ganti ke Python 3
-            // Copy file dari workspace Jenkins ke container
-            sh 'cp -r sources /tmp/'
-            sh 'mkdir -p dist'
-            
-            // Compile dalam directory yang konsisten
-            sh 'pyinstaller --onefile /tmp/sources/add2vals.py'
-            
-            // Copy hasil build kembali ke workspace
-            sh 'cp dist/add2vals ${WORKSPACE}/dist/'
+        docker.image('python:3-alpine').inside {
+            try {
+                // Install PyInstaller
+                sh 'pip install pyinstaller'
+                
+                // Buat executable dengan PyInstaller
+                sh 'pyinstaller --onefile sources/add2vals.py'
+                
+                // Arsipkan executable
+                archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
+            } catch (err) {
+                // Tangkap dan print error jika proses gagal
+                echo "Error in Deliver stage: ${err}"
+                throw err
+            }
         }
-        archiveArtifacts 'dist/add2vals'
     }
 }
