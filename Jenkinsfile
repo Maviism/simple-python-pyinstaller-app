@@ -23,15 +23,11 @@ node {
     
     stage('Deliver') {
         checkout scm
-        docker.image('python:3').inside {
-            // Install PyInstaller for Python 3
-            sh 'pip install --no-cache-dir --user pyinstaller'
-
+        docker.image('cdrx/pyinstaller-linux:python2').inside {
             // Compile the Python script into a standalone executable
             sh 'pyinstaller --onefile sources/add2vals.py'
-
-            // Archive the output executable
-            archiveArtifacts 'dist/add2vals'
         }
+        // Archive the executable file
+        archiveArtifacts 'dist/add2vals'
     }
 }
