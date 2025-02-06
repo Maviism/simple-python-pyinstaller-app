@@ -13,7 +13,7 @@ node {
             // Pre-installed with pytest framework and dependencies
             // Ready-to-use testing environment
             try {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc'
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
             } finally {
                 junit 'test-reports/results.xml'
             }
